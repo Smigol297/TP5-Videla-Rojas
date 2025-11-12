@@ -1,0 +1,81 @@
+package views
+import "tp5ne/db/sqlc"
+
+templ ProductList(products []db.Product) {
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            for _, product := range products {
+                <tr>
+                    <td>{ product.Name }</td>
+                    <td>{ product.Price }</td>
+                </tr>
+            }
+            if len(products) == 0 {
+                <tr>
+                    <td colspan="2">No hay productos disponibles.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+templ productForm(){
+    <form action="/products" method="POST">
+    <fieldset>
+        <label>
+        Nombre
+        <input
+            name="name"
+            placeholder="Nombre"
+        />
+        </label>
+        <label>
+        Precio
+        <input
+            type="number" step="0.1"
+            name="price"
+            placeholder="Precio"
+        />
+        </label>
+    </fieldset>
+
+    <input
+        type="submit"
+        value="Agregar"
+    />
+    </form>
+}
+templ Layout(title string, products []db.Product) {
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <!-- Pico.css -->
+            <link
+                rel="stylesheet"
+                href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.min.css"
+            >
+            <title>{title}</title>
+        </head>
+        <body>
+            <main class="container">
+            <h1>Lista de Productos</h1>
+            @ProductList(products)
+            </main>
+            <main class="container">
+            @productForm()
+            </main>
+        </body>
+    </html>
+}
+
+templ IndexPage(title string, products []db.Product) {
+    @Layout(title,products)
+}
