@@ -2,12 +2,23 @@ BINARY=myapp
 
 # Compilar
 build:
-	go run github.com/sqlc-dev/sqlc/cmd/sqlc@latest generate
-	go run github.com/a-h/templ/cmd/templ@latest generate
 	go build -o $(BINARY) .
+# Levantar servicios con Docker Compose
+up:
+	@docker compose up -d
+# Generar código con sqlc
+sqlc:
+	sqlc generate -f sqlc.postgres.yaml
 
-# Ejecutar servidor
-run: build
+sqlcTest:
+	sqlc generate -f sqlc.sqlite.yaml
+# Actualizar dependencias
+tidy: go.mod go.sum
+	@go mod tidy
+run: up tidy sqlc templ build
+	./$(BINARY) & echo $$! > server.pid
+	sleep 1
+runTest: up tidy sqlcTest templ build
 	./$(BINARY) & echo $$! > server.pid
 	sleep 1
 stop:
@@ -18,4 +29,9 @@ stop:
 		 "No se encontró server.pid, utilizar lsoft -i :8080 para buscar el proceso y luego kill 'PID' para matarlo"; \
 	fi
 
+rebootTest: stop runTest
 reboot: stop run
+
+templ:
+	find . -name '*_templ.go' -delete
+	go run github.com/a-h/templ/cmd/templ@latest generate

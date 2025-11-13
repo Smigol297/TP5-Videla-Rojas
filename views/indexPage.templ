@@ -1,0 +1,8 @@
+package views
+import (
+    "tp5/db"
+)
+
+templ IndexPage(title string, data any, temas []db.Tema) {
+    @Layout(title, IndexContent(data, temas))
+}

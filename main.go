@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
-	"tp5ne/db"
-	sqlc "tp5ne/db/sqlc"
-	"tp5ne/handlers"
+	sqlc "tp5/db"
+	"tp5/handlers"
+	"tp5/logic"
 )
 
 func initServer() {
@@ -21,16 +20,15 @@ func initServer() {
 }
 
 func main() {
-	conn, err := db.ConnectDB()
-	if err != nil {
-		log.Fatal(err)
-	}
+	var inTest = false
+	conn := logic.ConnectDB(inTest)
 	defer conn.Close()
 
 	queries := sqlc.New(conn)
-	productHandler := handlers.NewProductHandler(queries)
+	tarjetaHandler := handlers.NewTarjetaHandler(queries)
 
-	http.Handle("/", productHandler)
+	http.Handle("/", tarjetaHandler)
+	http.HandleFunc("/temas", logic.TemasHandler)
 
 	initServer()
 }

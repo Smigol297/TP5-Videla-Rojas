@@ -1,0 +1,19 @@
+package views
+import "tp5/db"
+
+templ TarjetaAndTemaBody(tarjetas []db.Tarjetum, temas []db.Tema) {
+    <main class="container">
+            <section>
+                <main class="container">
+                    <h1>Lista de Temas</h1>
+                    @TemaList(temas)
+                </main>
+                <main class="container">
+                    @temaForm()
+                </main>
+            </section>
+            <section>
+                @TarjetaBody(tarjetas)
+            </section>
+    </main>
+}

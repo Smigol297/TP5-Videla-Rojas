@@ -1,0 +1,36 @@
+package views
+import "tp5/db"
+
+templ TemaList(temas []db.Tema) {
+    <table>
+        <thead>
+            <tr>
+                <th>IDTema</th>
+                <th>Nombre del tema</th>
+            </tr>
+        </thead>
+        <tbody>
+            for _, tema := range temas {
+                <tr>
+                    <td>{ tema.IDTema }</td>
+                    <td>{ tema.NombreTema }</td>
+                </tr>
+            }
+            if len(temas) == 0 {
+                <tr>
+                    <td colspan="2">No hay temas agregados.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+templ temaForm(){
+    <form id="tema-form" class="entity-form">
+        <fieldset>
+            <label for="tema-nombre">Nombre del Tema:</label>
+                <input type="text" id="tema-nombre" name="nombre_tema" required>
+        </fieldset>
+        <button type="submit">Guardar Tema</button>
+    </form>
+}

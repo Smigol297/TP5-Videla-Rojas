@@ -1,0 +1,52 @@
+package views
+import "tp5/db"
+
+templ UserList(usuarios []db.Usuario){
+    <table>
+        <thead>
+            <tr>
+                <th>ID Usuario</th>
+                <th>Nombre Usuario</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            for _, usuario := range usuarios {
+                <tr>
+                    <td>{ usuario.IDUsuario }</td>
+                    <td>{ usuario.NombreUsuario }</td>
+                    <td>{ usuario.Email }</td>
+                </tr>
+            }
+            if len(usuarios) == 0 {
+                <tr>
+                    <td colspan="2">No hay usuarios agregados.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+templ userForm(){
+     <form id="usuario-form" class="entity-form">
+        <fieldset>
+            <label for="usuario-nombre">Nombre del Usuario:</label>
+            <input type="text" id="usuario-nombre" name="nombre_usuario" required>
+            <label for="usuario-nombre">Email:</label>
+            <input type="text" id="usuario-email" name="email_usuario" required>
+            <label for="usuario-nombre">Contraseña:</label>
+            <input type="text" id="usuario-contrasena" name="contrasena_usuario" required>
+        </fieldset>
+        <button type="submit">Crear usuario</button>
+    </form>
+}
+
+templ UserBody(usuarios []db.Usuario) {
+    <main class="container">
+            <h1>Lista de Usuarios</h1>
+            @UserList(usuarios)
+    </main>
+    <main class="container">
+            @userForm()
+    </main>
+}

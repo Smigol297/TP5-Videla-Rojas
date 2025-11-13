@@ -1,0 +1,124 @@
+package views
+import "tp5/db"
+
+templ TarjetaList(tarjetas []db.Tarjetum) {
+    <table>
+        <thead>
+            <tr>
+                <th>IDTarjeta</th>
+                <th>Pregunta</th>
+                <th>Respuesta</th>
+                <th>OpcionA</th>
+                <th>OpcionB</th>
+                <th>OpcionC</th>
+                <th>IDTema</th>
+            </tr>
+        </thead>
+        <tbody>
+            for _, tarjeta := range tarjetas {
+                <tr>
+                    <td>{ tarjeta.IDTarjeta }</td>
+                    <td>{ tarjeta.Pregunta }</td>
+                    <td>{ tarjeta.Respuesta }</td>
+                    <td>{ tarjeta.OpcionA }</td>
+                    <td>{ tarjeta.OpcionB }</td>
+                    <td>{ tarjeta.OpcionC }</td>
+                    <td>{ tarjeta.IDTema }</td>
+                </tr>
+            }
+            if len(tarjetas) == 0 {
+                <tr>
+                    <td colspan="2">No hay tarjetas disponibles.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+templ tarjetaForm(){
+    <form id="tarjeta-form" class="entity-form">
+    <fieldset>
+        <legend>Información principal</legend>
+        <div>
+            <label for="tarjeta-pregunta">Pregunta:</label>
+            <input type="text" id="tarjeta-pregunta" name="pregunta" required>
+        </div>
+        <div>
+            <label for="tarjeta-respuesta">Respuesta (Correcta):</label>
+            <input type="text" id="tarjeta-respuesta" name="respuesta" required>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Opciones</legend>
+        <div>
+            <label for="tarjeta-opcion-a">Opción A:</label>
+            <input type="text" id="tarjeta-opcion-a" name="opcion_a" required>
+        </div>
+        <div>
+            <label for="tarjeta-opcion-b">Opción B:</label>
+            <input type="text" id="tarjeta-opcion-b" name="opcion_b" required>
+        </div>
+        <div>
+            <label for="tarjeta-opcion-c">Opción C:</label>
+            <input type="text" id="tarjeta-opcion-c" name="opcion_c" required>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Relación con tema</legend>
+        <div>
+            <label for="tarjeta-id-tema">ID del Tema:</label>
+            <select id="tarjeta-id-tema" name="tema_id" required>
+                <!-- Opciones generadas dinámicamente -->
+            </select>
+        </div>
+    </fieldset>
+
+    <button type="submit">Guardar Tarjeta</button>
+    </form>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const TEMA_API = "/temas"; // ajustá a tu endpoint real
+            const tarjetaIdTemaInput = document.getElementById("tarjeta-id-tema");
+
+            tarjetaIdTemaInput.innerHTML = ""; // Limpiar opciones
+            const emptyOption = document.createElement("option");
+            emptyOption.value = "";
+            emptyOption.textContent = "Selecciona un tema";
+            emptyOption.disabled = true;
+            emptyOption.selected = true;
+            tarjetaIdTemaInput.appendChild(emptyOption);
+
+            try {
+                const temasResponse = await fetch(TEMA_API);
+                if (temasResponse.ok) {
+                    const temas = await temasResponse.json();
+                    temas.forEach(tema => {
+                        const option = document.createElement("option");
+                        option.value = tema.id_tema;
+                        option.textContent = tema.nombre_tema;
+                        tarjetaIdTemaInput.appendChild(option);
+                    });
+                } else {
+                    console.error("Error al obtener temas");
+                }
+            } catch (error) {
+                console.error("Error en fetch:", error);
+            }
+        });
+    </script>
+
+}
+
+templ TarjetaBody(tarjetas []db.Tarjetum) {
+    <main class="container">
+            <h2>Lista de Tarjetas</h2>
+            @TarjetaList(tarjetas)
+    </main>
+    <main class="container">
+        <h2>Crear Tarjetas</h2>
+        @tarjetaForm()
+    </main>
+}
