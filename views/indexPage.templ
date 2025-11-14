@@ -6,3 +6,7 @@ import (
 templ IndexPage(title string, data any, temas []db.Tema) {
     @Layout(title, IndexContent(data, temas))
 }
+
+templ WelcomePage(title string){
+    @Layout(title,WelcomeBody())
+}

@@ -2,6 +2,7 @@ package views
 import "tp5/db"
 
 templ TarjetaList(tarjetas []db.Tarjetum) {
+    <div class="overflow-auto">
     <table>
         <thead>
             <tr>
@@ -33,10 +34,11 @@ templ TarjetaList(tarjetas []db.Tarjetum) {
             }
         </tbody>
     </table>
+    </div>
 }
 
 templ tarjetaForm(){
-    <form id="tarjeta-form" class="entity-form">
+    <form id="tarjeta-form" class="entity-form" method="post">
     <fieldset>
         <legend>Información principal</legend>
         <div>
@@ -53,15 +55,15 @@ templ tarjetaForm(){
         <legend>Opciones</legend>
         <div>
             <label for="tarjeta-opcion-a">Opción A:</label>
-            <input type="text" id="tarjeta-opcion-a" name="opcion_a" required>
+            <input type="text" id="tarjeta-opcion-a" name="opcion-a" required>
         </div>
         <div>
             <label for="tarjeta-opcion-b">Opción B:</label>
-            <input type="text" id="tarjeta-opcion-b" name="opcion_b" required>
+            <input type="text" id="tarjeta-opcion-b" name="opcion-b" required>
         </div>
         <div>
             <label for="tarjeta-opcion-c">Opción C:</label>
-            <input type="text" id="tarjeta-opcion-c" name="opcion_c" required>
+            <input type="text" id="tarjeta-opcion-c" name="opcion-c" required>
         </div>
     </fieldset>
 
@@ -69,46 +71,12 @@ templ tarjetaForm(){
         <legend>Relación con tema</legend>
         <div>
             <label for="tarjeta-id-tema">ID del Tema:</label>
-            <select id="tarjeta-id-tema" name="tema_id" required>
-                <!-- Opciones generadas dinámicamente -->
-            </select>
+            <input type="number" id="tarjeta-id-tema" name="id-tema" placeholder="Ingrese un ID" min="1" required>
         </div>
     </fieldset>
 
     <button type="submit">Guardar Tarjeta</button>
     </form>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", async () => {
-            const TEMA_API = "/temas"; // ajustá a tu endpoint real
-            const tarjetaIdTemaInput = document.getElementById("tarjeta-id-tema");
-
-            tarjetaIdTemaInput.innerHTML = ""; // Limpiar opciones
-            const emptyOption = document.createElement("option");
-            emptyOption.value = "";
-            emptyOption.textContent = "Selecciona un tema";
-            emptyOption.disabled = true;
-            emptyOption.selected = true;
-            tarjetaIdTemaInput.appendChild(emptyOption);
-
-            try {
-                const temasResponse = await fetch(TEMA_API);
-                if (temasResponse.ok) {
-                    const temas = await temasResponse.json();
-                    temas.forEach(tema => {
-                        const option = document.createElement("option");
-                        option.value = tema.id_tema;
-                        option.textContent = tema.nombre_tema;
-                        tarjetaIdTemaInput.appendChild(option);
-                    });
-                } else {
-                    console.error("Error al obtener temas");
-                }
-            } catch (error) {
-                console.error("Error en fetch:", error);
-            }
-        });
-    </script>
 
 }
 

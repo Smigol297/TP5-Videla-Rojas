@@ -2,6 +2,7 @@ package views
 import "tp5/db"
 
 templ TemaList(temas []db.Tema) {
+    <div class="overflow-auto">
     <table>
         <thead>
             <tr>
@@ -23,6 +24,7 @@ templ TemaList(temas []db.Tema) {
             }
         </tbody>
     </table>
+    </div>
 }
 
 templ temaForm(){

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 	sqlc "tp5/db"
 
 	_ "github.com/lib/pq"
@@ -59,106 +58,8 @@ func ValidateUpdateTarjeta(p sqlc.UpdateTarjetaParams) error {
 	return nil
 }
 
-func TarjetasHandler(w http.ResponseWriter, r *http.Request) {
-	//esto se deberia sacar
-	var inTest = false
-
-	db := ConnectDB(inTest)
-	defer db.Close()
-
-	queries := sqlc.New(db)
-	switch r.Method {
-	case http.MethodGet:
-		temaStr := r.URL.Query().Get("tema") // obtiene el parámetro "tema"
-		//GET /tarjetas
-		if temaStr == "" {
-			getTarjetas(w, r, queries)
-			return
-		}
-
-		tema, err := strconv.Atoi(temaStr)
-		if err != nil {
-			http.Error(w, "ID de tarjeta inválido", http.StatusBadRequest)
-			return
-		}
-		//GET /tarjetas?tema=1
-		getTarjetasByTema(w, r, tema, queries)
-	//POST /tarjetas
-	case http.MethodPost:
-		createTarjeta(w, r, queries)
-	default:
-		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
-	}
-}
-
-func getTarjetas(w http.ResponseWriter, r *http.Request, queries *sqlc.Queries) {
-	w.Header().Set("Content-Type", "application/json")
-
-	ctx := context.Background()
-	tarjetas, err := queries.ListTarjetas(ctx)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	// Enviar los datos como JSON válido
-	if err := json.NewEncoder(w).Encode(tarjetas); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-func getTarjetasByTema(w http.ResponseWriter, r *http.Request, tema int, queries *sqlc.Queries) {
-	w.Header().Set("Content-Type", "application/json")
-
-	ctx := context.Background()
-	tarjetas, err := queries.ListTarjetasByTema(ctx, int32(tema))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	// Enviar los datos como JSON válido
-	if err := json.NewEncoder(w).Encode(tarjetas); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-func createTarjeta(w http.ResponseWriter, r *http.Request, queries *sqlc.Queries) {
-	var p sqlc.CreateTarjetaParams
-
-	// decodificar JSON
-	err := json.NewDecoder(r.Body).Decode(&p)
-	if err != nil {
-		http.Error(w, "JSON inválido", http.StatusBadRequest)
-		return
-	}
-
-	// validar tarjeta
-	if err := ValidateCreateTarjeta(p); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	// crear tarjeta en la base de datos
-	ctx := context.Background()
-	newTarjeta, err := queries.CreateTarjeta(ctx, p)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json") // <- Servidor dice: "Te voy a enviar JSON"
-	w.WriteHeader(http.StatusCreated)                  // <- Servidor dice: "Operación exitosa, recurso creado (201)"
-
-	// Enviar los datos como JSON válido
-	if err := json.NewEncoder(w).Encode(newTarjeta); err != nil { // <- Servidor ENVÍA los datos al cliente
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
 func TarjetasByIDHandler(w http.ResponseWriter, r *http.Request) {
-	//esto se deberia sacar
-	var inTest = false
-
-	db := ConnectDB(inTest)
+	db := ConnectDB()
 	defer db.Close()
 
 	queries := sqlc.New(db)

@@ -45,10 +45,7 @@ func getTemas(w http.ResponseWriter, r *http.Request, queries *sqlc.Queries) {
 	}
 }
 func TemasHandler(w http.ResponseWriter, r *http.Request) {
-	//esto se deberia sacar
-	var inTest = false
-
-	db := ConnectDB(inTest)
+	db := ConnectDB()
 	defer db.Close()
 
 	defer db.Close()
@@ -96,10 +93,7 @@ func createTema(w http.ResponseWriter, r *http.Request, queries *sqlc.Queries) {
 }
 
 func TemasByIDHandler(w http.ResponseWriter, r *http.Request) {
-	//esto se deberia sacar
-	var inTest = false
-
-	db := ConnectDB(inTest)
+	db := ConnectDB()
 	defer db.Close()
 
 	defer db.Close()

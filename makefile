@@ -8,17 +8,11 @@ up:
 	@docker compose up -d
 # Generar código con sqlc
 sqlc:
-	sqlc generate -f sqlc.postgres.yaml
-
-sqlcTest:
-	sqlc generate -f sqlc.sqlite.yaml
+	sqlc generate -f sqlc.yaml
 # Actualizar dependencias
 tidy: go.mod go.sum
 	@go mod tidy
 run: up tidy sqlc templ build
-	./$(BINARY) & echo $$! > server.pid
-	sleep 1
-runTest: up tidy sqlcTest templ build
 	./$(BINARY) & echo $$! > server.pid
 	sleep 1
 stop:
@@ -29,7 +23,6 @@ stop:
 		 "No se encontró server.pid, utilizar lsoft -i :8080 para buscar el proceso y luego kill 'PID' para matarlo"; \
 	fi
 
-rebootTest: stop runTest
 reboot: stop run
 
 templ:

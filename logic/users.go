@@ -61,10 +61,7 @@ func getUsers(w http.ResponseWriter, r *http.Request, queries *sqlc.Queries) {
 	}
 }
 func UsersHandler(w http.ResponseWriter, r *http.Request) {
-	//esto se deberia sacar
-	var inTest = false
-
-	db := ConnectDB(inTest)
+	db := ConnectDB()
 	defer db.Close()
 
 	queries := sqlc.New(db)
@@ -112,10 +109,7 @@ func createUser(w http.ResponseWriter, r *http.Request, queries *sqlc.Queries) {
 }
 
 func UsersByIDHandler(w http.ResponseWriter, r *http.Request) {
-	//esto se deberia sacar
-	var inTest = false
-
-	db := ConnectDB(inTest)
+	db := ConnectDB()
 	defer db.Close()
 
 	defer db.Close()

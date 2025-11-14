@@ -1,34 +1,44 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	sqlc "tp5/db"
 	"tp5/handlers"
 	"tp5/logic"
+	"tp5/middleware"
+	"tp5/views"
 )
 
-func initServer() {
-	// Define el puerto y muestra un mensaje en consola
-	port := ":8081"
-	fmt.Printf("Servidor escuchando en http://localhost%s\n", port)
-	// Inicia el servidor HTTP
-	err := http.ListenAndServe(port, nil)
-	if err != nil {
-		fmt.Printf("Error al iniciar el servidor: %s\n", err) // Muestra error si falla el inicio
-	}
-}
-
 func main() {
-	var inTest = false
-	conn := logic.ConnectDB(inTest)
+	conn := logic.ConnectDB()
 	defer conn.Close()
 
 	queries := sqlc.New(conn)
-	tarjetaHandler := handlers.NewTarjetaHandler(queries)
 
-	http.Handle("/", tarjetaHandler)
-	http.HandleFunc("/temas", logic.TemasHandler)
+	mux := http.NewServeMux()
 
-	initServer()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		views.WelcomePage("Bienvenido").Render(r.Context(), w)
+	})
+
+	tar := handlers.NewTarjetaHandler(queries)
+	tarHandler := middleware.LoggingMiddleware(middleware.AuthMiddleware(tar))
+	mux.Handle("/tarjetas", tarHandler)
+	mux.Handle("/tarjetas/", tarHandler)
+	/*tema := handlers.NewTemaHandler(queries)
+	temaHandler := middleware.LoggingMiddleware(middleware.AuthMiddleware(tema))
+	mux.Handle("/temas", temaHandler)
+	mux.Handle("/temas/", temaHandler)
+	usuario := handlers.NewUsuarioHandler(queries)
+	usuarioHandler := middleware.LoggingMiddleware(middleware.AuthMiddleware(usuario))
+	mux.Handle("/usuarios", usuarioHandler)
+	mux.Handle("/usuarios/", usuarioHandler)
+	*/
+	mux.HandleFunc("/temas", logic.TemasHandler)
+
+	log.Println("starting server :8081")
+	if err := http.ListenAndServe(":8081", mux); err != nil {
+		log.Fatal(err)
+	}
 }
