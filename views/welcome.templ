@@ -18,7 +18,6 @@ templ WelcomeBody(){
 
     <section>
       <h2>Temas</h2>
-      <p><a href="/temas" role="button">Ver todos los temas</a></p>
 
       <form method="get" action="/temas/">
         <label for="tema-id">Buscar tema por ID:</label>
@@ -39,16 +38,4 @@ templ WelcomeBody(){
     </section>
   </main>
 
-  <script>
-    // Convierte las búsquedas con ID en rutas /recurso/{id}
-    document.querySelectorAll('form').forEach(form => {
-      form.addEventListener('submit', e => {
-        e.preventDefault();
-        const input = form.querySelector('input[type="number"]');
-        if (input.value) {
-          window.location.href = form.action + encodeURIComponent(input.value);
-        }
-      });
-    });
-  </script>
 }

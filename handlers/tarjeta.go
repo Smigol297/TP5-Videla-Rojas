@@ -31,6 +31,7 @@ func (h *TarjetaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			//GET /tarjetas
 			if temaStr == "" {
 				h.GetTarjetasAndTemas("Lista de tarjetas", w, r)
+				//h.GetTarjetas("Lista de tarjetas", w, r)
 				return
 			}
 
@@ -63,7 +64,7 @@ func (h *TarjetaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		//GET/tarjetas=1
 		case http.MethodGet:
-			h.GetTarjetaByID("Tarjeta por tema", w, r, id)
+			h.GetTarjetaByID("Tarjeta por id", w, r, id)
 		//PUT/tarjetas=1
 		case http.MethodPut:
 			h.PutTarjetaByID(w, r, id)

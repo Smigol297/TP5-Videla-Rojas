@@ -23,6 +23,10 @@ func IndexContent(data any, temas []db.Tema) templ.Component {
 		return UserBody(d)
 	case db.Tarjetum:
 		return TarjetaIDBody(d)
+	case db.Tema:
+		return TemaIDBody(d)
+	case db.Usuario:
+		return UsuarioIDBody(d)
 	default:
 		return EmptyPage()
 	}

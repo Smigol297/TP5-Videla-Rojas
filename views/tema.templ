@@ -1,13 +1,18 @@
 package views
-import "tp5/db"
-
+import (
+    "tp5/db"
+    "strconv"
+)
 templ TemaList(temas []db.Tema) {
+    
     <div class="overflow-auto">
     <table>
         <thead>
             <tr>
                 <th>IDTema</th>
                 <th>Nombre del tema</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -15,6 +20,31 @@ templ TemaList(temas []db.Tema) {
                 <tr>
                     <td>{ tema.IDTema }</td>
                     <td>{ tema.NombreTema }</td>
+                    <td>
+						<a role="button" onclick={ templ.JSFuncCall("openDialog", "edit-"+strconv.Itoa(int(tema.IDTema))) }>
+							Modificar
+						</a>
+						<dialog id={"edit-" + strconv.Itoa(int(tema.IDTema))}>
+							<article>
+								<header>Editar Tema #{ tema.IDTema }</header>
+								<!-- onsubmit cierra el dialog (y el formulario se envía normalmente) -->
+								<form method="post" action={"/temas/" + strconv.Itoa(int(tema.IDTema))} onsubmit={ templ.JSFuncCall("closeDialog", "edit-"+strconv.Itoa(int(tema.IDTema))) }>
+									<input type="hidden" name="_method" value="PUT">
+								<label>NombreTema</label>
+									<input type="text" name="tema-nombre" value={ tema.NombreTema }>
+                                    <button type="submit">Guardar</button>
+									<button type="button" onclick={ templ.JSFuncCall("closeDialog", "edit-"+strconv.Itoa(int(tema.IDTema))) }>Cancelar</button>
+								</form>
+							</article>
+						</dialog>
+					</td>
+
+                    <td>
+                        <form action={"/temas/" + strconv.Itoa(int(tema.IDTema))} method="post">
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <button role="button">Eliminar</button>
+                        </form>
+                    </td>
                 </tr>
             }
             if len(temas) == 0 {
@@ -28,11 +58,20 @@ templ TemaList(temas []db.Tema) {
 }
 
 templ temaForm(){
-    <form id="tema-form" class="entity-form">
+    <form id="tema-form" class="entity-form" method="post" action="/temas">
         <fieldset>
             <label for="tema-nombre">Nombre del Tema:</label>
-                <input type="text" id="tema-nombre" name="nombre_tema" required>
+                <input type="text" id="tema-nombre" name="tema-nombre" required>
         </fieldset>
         <button type="submit">Guardar Tema</button>
     </form>
+}
+
+templ TemaIDBody(tema db.Tema){
+    <main style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+        <article style="max-width: 600px;">
+            <header>ID del tema: {tema.IDTema}</header>
+            Nombre del tema: { tema.NombreTema }
+        </article>
+    </main>
 }

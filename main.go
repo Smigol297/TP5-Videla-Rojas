@@ -26,16 +26,14 @@ func main() {
 	tarHandler := middleware.LoggingMiddleware(middleware.AuthMiddleware(tar))
 	mux.Handle("/tarjetas", tarHandler)
 	mux.Handle("/tarjetas/", tarHandler)
-	/*tema := handlers.NewTemaHandler(queries)
+	tema := handlers.NewTemaHandler(queries)
 	temaHandler := middleware.LoggingMiddleware(middleware.AuthMiddleware(tema))
 	mux.Handle("/temas", temaHandler)
 	mux.Handle("/temas/", temaHandler)
-	/*usuario := handlers.NewUsuarioHandler(queries)
+	usuario := handlers.NewUsuarioHandler(queries)
 	usuarioHandler := middleware.LoggingMiddleware(middleware.AuthMiddleware(usuario))
 	mux.Handle("/usuarios", usuarioHandler)
 	mux.Handle("/usuarios/", usuarioHandler)
-	*/
-	mux.HandleFunc("/temas", logic.TemasHandler)
 
 	log.Println("starting server :8081")
 	if err := http.ListenAndServe(":8081", mux); err != nil {
