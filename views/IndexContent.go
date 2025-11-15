@@ -21,6 +21,8 @@ func IndexContent(data any, temas []db.Tema) templ.Component {
 		return TarjetaBody(d)
 	case []db.Usuario:
 		return UserBody(d)
+	case db.Tarjetum:
+		return TarjetaIDBody(d)
 	default:
 		return EmptyPage()
 	}

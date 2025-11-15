@@ -30,7 +30,7 @@ func main() {
 	temaHandler := middleware.LoggingMiddleware(middleware.AuthMiddleware(tema))
 	mux.Handle("/temas", temaHandler)
 	mux.Handle("/temas/", temaHandler)
-	usuario := handlers.NewUsuarioHandler(queries)
+	/*usuario := handlers.NewUsuarioHandler(queries)
 	usuarioHandler := middleware.LoggingMiddleware(middleware.AuthMiddleware(usuario))
 	mux.Handle("/usuarios", usuarioHandler)
 	mux.Handle("/usuarios/", usuarioHandler)

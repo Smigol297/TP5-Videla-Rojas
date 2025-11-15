@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -22,8 +23,8 @@ func (h *TarjetaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	switch r.URL.Path {
-	case "/tarjetas":
+	switch {
+	case r.URL.Path == "/tarjetas":
 		switch r.Method {
 		case http.MethodGet:
 			temaStr := r.URL.Query().Get("tema") // obtiene el parámetro "tema"
@@ -47,7 +48,40 @@ func (h *TarjetaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
 		}
 	//parte tarjetas by id
-	case "/tarjetas/":
+	case strings.HasPrefix(r.URL.Path, "/tarjetas/"):
+		var id int
+		_, err := fmt.Sscanf(r.URL.Path, "/tarjetas/%d", &id)
+		if err != nil {
+			if idStr := r.URL.Query().Get("id"); idStr != "" {
+				id, err = strconv.Atoi(idStr)
+				if err != nil {
+					http.Error(w, "ID inválido", http.StatusBadRequest)
+					return
+				}
+			}
+		}
+		switch r.Method {
+		//GET/tarjetas=1
+		case http.MethodGet:
+			h.GetTarjetaByID("Tarjeta por tema", w, r, id)
+		//PUT/tarjetas=1
+		case http.MethodPut:
+			h.PutTarjetaByID(w, r, id)
+		//DELETE/tarjetas=1
+		case http.MethodDelete:
+			h.DeleteTarjetaByID(w, r, id)
+		case http.MethodPost:
+			switch r.FormValue("_method") {
+			case "PUT":
+				h.PutTarjetaByID(w, r, id)
+			case "DELETE":
+				h.DeleteTarjetaByID(w, r, id)
+			default:
+				http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
+			}
+		default:
+			http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
+		}
 	default:
 		http.NotFound(w, r)
 	}
@@ -66,7 +100,6 @@ func (h *TarjetaHandler) GetTarjetas(title string, w http.ResponseWriter, r *htt
 func (h *TarjetaHandler) CreateTarjeta(w http.ResponseWriter, r *http.Request) {
 	var p db.CreateTarjetaParams
 	r.ParseForm()
-
 	idTemaStr := r.Form.Get("id-tema")
 	idTema, err := strconv.ParseInt(idTemaStr, 10, 64)
 	if err != nil {

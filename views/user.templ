@@ -42,11 +42,11 @@ templ userForm(){
 }
 
 templ UserBody(usuarios []db.Usuario) {
-    <main class="container">
+    <article>
             <h1>Lista de Usuarios</h1>
             @UserList(usuarios)
-    </main>
-    <main class="container">
+    </article>
+    <article>
             @userForm()
-    </main>
+    </article>
 }
