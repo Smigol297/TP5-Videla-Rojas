@@ -21,11 +21,11 @@ func main() {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		views.WelcomePage("Bienvenido").Render(r.Context(), w)
 	})
-
 	tar := handlers.NewTarjetaHandler(queries)
 	tarHandler := middleware.LoggingMiddleware(middleware.AuthMiddleware(tar))
 	mux.Handle("/tarjetas", tarHandler)
 	mux.Handle("/tarjetas/", tarHandler)
+	mux.Handle("/session/", tarHandler)
 	tema := handlers.NewTemaHandler(queries)
 	temaHandler := middleware.LoggingMiddleware(middleware.AuthMiddleware(tema))
 	mux.Handle("/temas", temaHandler)

@@ -19,11 +19,15 @@ func NewTarjetaHandler(q *db.Queries) *TarjetaHandler {
 	return &TarjetaHandler{queries: q}
 }
 func (h *TarjetaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if !strings.HasPrefix(r.URL.Path, "/tarjetas") {
+	/*if !strings.HasPrefix(r.URL.Path, "/tarjetas") {
 		http.NotFound(w, r)
 		return
-	}
+	}*/
 	switch {
+	case strings.HasPrefix(r.URL.Path, "/session/"):
+		var tema int
+		fmt.Sscanf(r.URL.Path, "/session/%d", &tema)
+		VerificarRespuestasHandler(w, r, h.queries, tema)
 	case r.URL.Path == "/tarjetas":
 		switch r.Method {
 		case http.MethodGet:
@@ -134,7 +138,8 @@ func (h *TarjetaHandler) GetTarjetasByTema(title string, tema int, w http.Respon
 			http.StatusInternalServerError)
 		return
 	}
-	views.IndexPage(title, tarjetas, nil).Render(r.Context(), w)
+	//	views.IndexPage(title, tarjetas, nil).Render(r.Context(), w)
+	views.SesionPage(tarjetas).Render(r.Context(), w)
 }
 
 func (h *TarjetaHandler) GetTarjetasAndTemas(title string, w http.ResponseWriter, r *http.Request) {

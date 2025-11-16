@@ -1,0 +1,291 @@
+package views
+import (
+	"strconv"
+	"tp5/db"
+)
+
+templ SesionList(tarjetas []db.Tarjetum) {
+    <div>
+        if len(tarjetas) > 0 {
+            <form id="formTarjetas" method="post" action={"/session/" + strconv.Itoa(int(tarjetas[0].IDTema))}>
+                <input type="hidden" name="tema" value={ strconv.Itoa(int(tarjetas[0].IDTema)) }>
+
+                <div class="sesion-cards">
+                    for i, t := range tarjetas {
+                        <div id={ "tarjeta-" + strconv.Itoa(i+1) } class={ getCardClass(i) }>
+                            <div class="pregunta">{ t.Pregunta }</div>
+
+                            <div class="grid">
+                                <div class="opcion">A. { t.OpcionA }</div>
+                                <div class="opcion">B. { t.OpcionB }</div>
+                                <div class="opcion">C. { t.OpcionC }</div>
+                            </div>
+
+                            <input type="hidden" name={ "pregunta" + strconv.Itoa(i+1) } value={ t.Pregunta }/>
+                            <input type="hidden" name={ "respuestaCorrecta" + strconv.Itoa(i+1) } value={ t.Respuesta }/>
+
+                            <label>
+                                Tu respuesta:
+                                <input
+                                    type="text"
+                                    name={ "respuesta" + strconv.Itoa(i+1) }
+                                    class="campo-texto"
+                                    placeholder="Escribe tu respuesta"
+                                    required
+                                    aria-describedby={ "help-text-" + strconv.Itoa(i+1) }
+                                />
+                            </label>
+                            <small id={ "help-text-" + strconv.Itoa(i+1) }>Ingresa la letra de la respuesta correcta (A, B o C)</small>
+
+                            <div class="grid">
+                                <button
+                                    type="button"
+                                    class="contrast"
+                                    data-index={ strconv.Itoa(i+1) }
+                                >
+                                    Siguiente →
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </form>
+        }
+
+        if len(tarjetas) == 0 {
+            <article class="text-center">
+                <p><strong>No hay tarjetas para este tema.</strong></p>
+                <p>Selecciona otro tema o crea nuevas tarjetas de estudio.</p>
+            </article>
+        }
+    </div>
+}
+
+templ SesionPage(tarjetas []db.Tarjetum) {
+    <!DOCTYPE html>
+    <html lang="es">
+        <head>
+            <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <title>Tarjetas de Estudio</title>
+            
+            <!-- Pico CSS CDN -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+            
+            <style>
+                /* Solo estilos mínimos necesarios que Pico CSS no cubre */
+                .tarjeta {
+                    display: none;
+                    margin: 2rem 0;
+                    padding: 2rem;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    border: 1px solid var(--pico-muted-border-color);
+                }
+                .visible {
+                    display: block;
+                }
+                .sesion-cards {
+                    max-width: 600px;
+                    margin: 0 auto;
+                }
+                .pregunta {
+                    font-weight: bold;
+                    margin-bottom: 1.5rem;
+                    font-size: 1.2rem;
+                    color: var(--pico-primary);
+                }
+                .opcion {
+                    margin-bottom: 0.5rem;
+                    padding: 0.5rem;
+                    background: var(--pico-secondary-background);
+                    border-radius: 4px;
+                }
+                .campo-texto {
+                    margin: 1.5rem 0;
+                }
+            </style>
+        </head>
+
+        <body>
+            <main class="container">
+                <article>
+                    <header class="text-center">
+                        <h1>Tarjetas de estudio</h1>
+                        <p>Responde cada pregunta para continuar</p>
+                    </header>
+                    
+                    <hr/>
+                    
+                    @SesionList(tarjetas)
+                </article>
+            </main>
+
+            <script>
+                function siguiente(n) {
+                    const actual = document.getElementById("tarjeta-" + n);
+                    const sig = document.getElementById("tarjeta-" + (n + 1));
+
+                    const resp = actual.querySelector("input[type='text']");
+                    if (!resp.value.trim()) {
+                        alert("Por favor, ingresa tu respuesta antes de continuar.");
+                        return;
+                    }
+
+                    if (!sig) {
+                        document.getElementById("formTarjetas").submit();
+                        return;
+                    }
+
+                    actual.classList.remove("visible");
+                    sig.classList.add("visible");
+                    
+                    // Hacer scroll suave a la siguiente tarjeta
+                    sig.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                // Agregar event listeners a todos los botones
+                document.addEventListener('DOMContentLoaded', function() {
+                    const botones = document.querySelectorAll('button[data-index]');
+                    botones.forEach(boton => {
+                        boton.addEventListener('click', function() {
+                            const index = this.getAttribute('data-index');
+                            siguiente(parseInt(index));
+                        });
+                    });
+                });
+            </script>
+        </body>
+    </html>
+}
+
+templ ResultsPage(resultados []Resultado, correctas int, total int, temaId int) {
+    <!DOCTYPE html>
+    <html lang="es">
+        <head>
+            <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <title>Resultados del Cuestionario</title>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+            <style>
+                .resultado {
+                    margin: 1rem 0;
+                    padding: 1rem;
+                    border-radius: 8px;
+                    border-left: 4px solid;
+                }
+                .correcta {
+                    background-color: var(--pico-color-green-50);
+                    border-left-color: var(--pico-color-green-400);
+                }
+                .incorrecta {
+                    background-color: var(--pico-color-red-50);
+                    border-left-color: var(--pico-color-red-400);
+                }
+                .estadisticas {
+                    text-align: center;
+                    margin-bottom: 2rem;
+                }
+                .pregunta {
+                    font-weight: bold;
+                    margin-bottom: 0.5rem;
+                }
+                .respuesta {
+                    margin: 0.25rem 0;
+                }
+                .correcta-text {
+                    color: var(--pico-color-green-600);
+                    font-weight: bold;
+                }
+                .incorrecta-text {
+                    color: var(--pico-color-red-600);
+                    font-weight: bold;
+                }
+                .progress-bar {
+                    background: #e9ecef;
+                    border-radius: 1rem;
+                    height: 1rem;
+                    margin: 1rem 0;
+                    overflow: hidden;
+                    width: 100%;
+                    position: relative;
+                }
+
+                .progress-fill {
+                    height: 100%;
+                    background: linear-gradient(45deg, #28a745, #20c997);
+                    transition: width 0.5s ease-in-out;
+                    display: block;
+                    border-radius: 1rem;
+                    min-width: 0.5rem;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+            </style>
+        </head>
+        <body>
+            <main class="container">
+                <article>
+                    <header class="estadisticas">
+                        <h1>📊 Resultados del Cuestionario</h1>
+                        
+                        <div class="grid">
+                            <div>
+                                <h2>Puntuación</h2>
+                                <p style="font-size: 2rem; margin: 0">{ strconv.Itoa(correctas) } / { strconv.Itoa(total) }</p>
+                            </div>
+                            <div>
+                                <h2>Porcentaje</h2>
+                                <p style="font-size: 2rem; margin: 0">{ calcularPorcentaje(correctas, total) }%</p>
+                            </div>
+                        </div>
+                        
+                       <div class="progress-bar">
+                            <div 
+                                class="progress-fill" 
+                                style={ getProgressWidth(correctas, total) }
+                            ></div>
+                        </div>
+                    </header>
+
+                    <h2>Detalle de Respuestas</h2>
+                    
+                    for i, resultado := range resultados {
+                        <div class={ getClaseResultado(resultado.EsCorrecta) }>
+                            <div class="pregunta">
+                                Pregunta { i+1 }: { resultado.Pregunta }
+                            </div>
+                            <div class="respuesta">
+                                <strong>Tu respuesta:</strong> { resultado.RespuestaUsuario }
+                            </div>
+                            <div class="respuesta">
+                                <strong>Respuesta correcta:</strong> { resultado.RespuestaCorrecta }
+                            </div>
+                            <div class={ getClaseTexto(resultado.EsCorrecta) }>
+                                { getTextoEstado(resultado.EsCorrecta) }
+                            </div>
+                        </div>
+                    }
+
+                    <footer style="text-align: center; margin-top: 3rem;">
+                        <div class="grid">
+                            <div>
+                                <a 
+                                    href={ "/tarjetas?tema=" + strconv.Itoa(temaId) } 
+                                    role="button" 
+                                    class="secondary"
+                                >
+                                    🔄 Volver a intentar
+                                </a>
+                            </div>
+                            <div>
+                                <a href="/" role="button">
+                                    🏠 Volver al inicio
+                                </a>
+                            </div>
+                        </div>
+                    </footer>
+                </article>
+            </main>
+        </body>
+    </html>
+}
