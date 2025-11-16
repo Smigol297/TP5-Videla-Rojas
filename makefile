@@ -6,6 +6,7 @@ build:
 # Levantar servicios con Docker Compose
 up:
 	@docker compose up -d
+	sleep 1
 # Generar código con sqlc
 sqlc:
 	sqlc generate -f sqlc.yaml
@@ -22,6 +23,9 @@ stop:
 	else \
 		 "No se encontró server.pid, utilizar lsof -i :8080 para buscar el proceso y luego kill 'PID' para matarlo"; \
 	fi
+down:
+	@docker compose down
+	@rm -rf $(BINARY)
 
 reboot: stop run
 
