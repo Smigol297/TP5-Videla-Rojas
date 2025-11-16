@@ -1,0 +1,13 @@
+# Ignorar binarios
+*.exe
+*.out
+*.bin
+
+# Ignorar directorios temporales
+tmp/
+vendor/
+
+# Ignorar archivos de configuración locales
+.env
+
+myapp
