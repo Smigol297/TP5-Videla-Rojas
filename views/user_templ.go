@@ -295,7 +295,7 @@ func userForm() templ.Component {
 			templ_7745c5c3_Var17 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<form id=\"usuario-form\" class=\"entity-form\" method=\"post\" action=\"/usuarios\"><fieldset><label for=\"usuario-nombre\">Nombre del Usuario:</label> <input type=\"text\" id=\"usuario-nombre\" name=\"nombre-usuario\" required> <label for=\"usuario-nombre\">Email:</label> <input type=\"text\" id=\"usuario-email\" name=\"email-usuario\" required> <label for=\"usuario-nombre\">Contraseña:</label> <input type=\"text\" id=\"usuario-contrasena\" name=\"contrasena-usuario\" required></fieldset><button type=\"submit\">Crear usuario</button></form>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<form id=\"usuario-form\" class=\"entity-form\" method=\"post\" action=\"/usuarios\"><fieldset><label for=\"usuario-nombre\">Nombre del Usuario:</label> <input type=\"text\" id=\"usuario-nombre\" name=\"usuario-nombre\" required> <label for=\"usuario-nombre\">Email:</label> <input type=\"text\" id=\"usuario-email\" name=\"usuario-email\" required> <label for=\"usuario-nombre\">Contraseña:</label> <input type=\"text\" id=\"usuario-contrasena\" name=\"usuario-contrasena\" required></fieldset><button type=\"submit\">Crear usuario</button></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

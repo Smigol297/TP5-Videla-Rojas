@@ -21,6 +21,8 @@ cd TP5-Videla-Rojas
 make run
 ```
 
+3. Abrir la aplicación
+Navega a http://localhost:8081 en tu navegador
 
 3. Detener
 
@@ -33,5 +35,4 @@ Detener docker
 ```bash
 make down
 ```
-
 

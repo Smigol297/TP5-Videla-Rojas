@@ -7,18 +7,19 @@ import (
 )
 
 func IndexContent(data any, temas []db.Tema) templ.Component {
-	if temas != nil {
+	/*if temas != nil {
 		switch d := data.(type) {
 		case []db.Tarjetum:
 			return TarjetaAndTemaBody(d, temas)
 		default:
 			return EmptyPage()
 		}
-	}
+	}*/
 
 	switch d := data.(type) {
 	case []db.Tarjetum:
-		return TarjetaBody(d)
+		//return TarjetaBody(d)
+		return TarjetaAndTemaBody(d, temas)
 	case []db.Usuario:
 		return UserBody(d)
 	case db.Tarjetum:
