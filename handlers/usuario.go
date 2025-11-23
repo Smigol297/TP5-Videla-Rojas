@@ -40,6 +40,7 @@ func (h *UsuarioHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case strings.HasPrefix(r.URL.Path, "/usuarios/"):
 		var id int
 		_, err := fmt.Sscanf(r.URL.Path, "/usuarios/%d", &id)
+
 		if err != nil {
 			if idStr := r.URL.Query().Get("id"); idStr != "" {
 				id, err = strconv.Atoi(idStr)
@@ -59,6 +60,7 @@ func (h *UsuarioHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		//DELETE/usuarios=1
 		case http.MethodDelete:
 			h.DeleteUsuarioByID(w, r, id)
+		//para formularios que no soportan PUT o DELETE
 		case http.MethodPost:
 			switch r.FormValue("_method") {
 			case "PUT":
@@ -101,5 +103,15 @@ func (h *UsuarioHandler) CreateUsuario(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/usuarios", http.StatusSeeOther)
+	//http.Redirect(w, r, "/usuarios", http.StatusSeeOther)
+
+	// 2. En lugar de Redirect, consultamos la lista actualizada
+	usuarios, err := h.queries.ListUsuarios(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	//  Renderizamos SOLO el componente de la lista (UserList)
+	// HTMX tomará este HTML y reemplazará la tabla vieja en el navegador.
+	views.UserList(usuarios).Render(r.Context(), w)
 }

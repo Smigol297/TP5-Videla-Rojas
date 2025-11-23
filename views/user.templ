@@ -17,7 +17,7 @@ templ UserList(usuarios []db.Usuario){
 		</script>
 	}
     
-    <table>
+    <table id="lista-usuarios">
         <thead>
             <tr>
                 <th>ID Usuario</th>
@@ -58,10 +58,15 @@ templ UserList(usuarios []db.Usuario){
 						</dialog>
                     </td>
                     <td>
-                        <form action={"/usuarios/" + strconv.Itoa(int(usuario.IDUsuario))} method="post">
-                        <input type="hidden" name="_method" value="DELETE" />
-                        <button role="button">Eliminar</button>
-                        </form>
+                        <button 
+                            class="secondary"
+                            hx-delete={ "/usuarios/" + strconv.Itoa(int(usuario.IDUsuario)) }
+                            hx-target="#lista-usuarios" 
+                            hx-swap="outerHTML"
+                            hx-confirm="¿Estás seguro de que deseas eliminar este usuario?"
+                        >
+                            Eliminar
+                        </button>
                     </td>
                 </tr>
             }
@@ -75,7 +80,14 @@ templ UserList(usuarios []db.Usuario){
 }
 
 templ userForm(){
-     <form id="usuario-form" class="entity-form" method="post" action="/usuarios">
+     <form 
+        id="usuario-form" 
+        class="entity-form" 
+        hx-post="/usuarios" 
+        hx-target="#lista-usuarios" 
+        hx-swap="outerHTML"
+        hx-on::after-request="this.reset()"
+    >
         <fieldset>
             <label for="usuario-nombre">Nombre del Usuario:</label>
             <input type="text" id="usuario-nombre" name="usuario-nombre" required>

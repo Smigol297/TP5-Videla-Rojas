@@ -9,7 +9,7 @@ import (
 )
 
 func VerificarRespuestasHandler(w http.ResponseWriter, r *http.Request, queries *db.Queries, temaId int) {
-	err := r.ParseForm()
+	err := r.ParseForm() //Le dice a Go: "Lee todos los datos que vinieron en la petición POST y organízalos".
 	if err != nil {
 		http.Error(w, "Error al procesar el formulario", http.StatusBadRequest)
 		return

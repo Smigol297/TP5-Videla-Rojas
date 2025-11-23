@@ -24,11 +24,11 @@ func (h *TarjetaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}*/
 	switch {
-	case strings.HasPrefix(r.URL.Path, "/session/"):
+	case strings.HasPrefix(r.URL.Path, "/session/"): // si la ruta empieza con /session/
 		var tema int
-		fmt.Sscanf(r.URL.Path, "/session/%d", &tema)
+		fmt.Sscanf(r.URL.Path, "/session/%d", &tema) // extrae el ID de tema
 		VerificarRespuestasHandler(w, r, h.queries, tema)
-	case r.URL.Path == "/tarjetas":
+	case r.URL.Path == "/tarjetas": // si la ruta es /tarjetas
 		switch r.Method {
 		case http.MethodGet:
 			temaStr := r.URL.Query().Get("tema") // obtiene el parámetro "tema"

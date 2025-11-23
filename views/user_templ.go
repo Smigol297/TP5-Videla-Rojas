@@ -56,7 +56,7 @@ func UserList(usuarios []db.Usuario) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<table><thead><tr><th>ID Usuario</th><th>Nombre Usuario</th><th>Email</th><th>Contraseña</th><th></th><th></th></tr></thead> <tbody>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<table id=\"lista-usuarios\"><thead><tr><th>ID Usuario</th><th>Nombre Usuario</th><th>Email</th><th>Contraseña</th><th></th><th></th></tr></thead> <tbody>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -242,20 +242,20 @@ func UserList(usuarios []db.Usuario) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "\">Cancelar</button></form></article></dialog></td><td><form action=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "\">Cancelar</button></form></article></dialog></td><td><button class=\"secondary\" hx-delete=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var16 templ.SafeURL
-			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinURLErrs("/usuarios/" + strconv.Itoa(int(usuario.IDUsuario)))
+			var templ_7745c5c3_Var16 string
+			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs("/usuarios/" + strconv.Itoa(int(usuario.IDUsuario)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/user.templ`, Line: 61, Col: 89}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/user.templ`, Line: 63, Col: 91}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\" method=\"post\"><input type=\"hidden\" name=\"_method\" value=\"DELETE\"> <button role=\"button\">Eliminar</button></form></td></tr>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\" hx-target=\"#lista-usuarios\" hx-swap=\"outerHTML\" hx-confirm=\"¿Estás seguro de que deseas eliminar este usuario?\">Eliminar</button></td></tr>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -295,7 +295,7 @@ func userForm() templ.Component {
 			templ_7745c5c3_Var17 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<form id=\"usuario-form\" class=\"entity-form\" method=\"post\" action=\"/usuarios\"><fieldset><label for=\"usuario-nombre\">Nombre del Usuario:</label> <input type=\"text\" id=\"usuario-nombre\" name=\"usuario-nombre\" required> <label for=\"usuario-nombre\">Email:</label> <input type=\"text\" id=\"usuario-email\" name=\"usuario-email\" required> <label for=\"usuario-nombre\">Contraseña:</label> <input type=\"text\" id=\"usuario-contrasena\" name=\"usuario-contrasena\" required></fieldset><button type=\"submit\">Crear usuario</button></form>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<form id=\"usuario-form\" class=\"entity-form\" hx-post=\"/usuarios\" hx-target=\"#lista-usuarios\" hx-swap=\"outerHTML\" hx-on::after-request=\"this.reset()\"><fieldset><label for=\"usuario-nombre\">Nombre del Usuario:</label> <input type=\"text\" id=\"usuario-nombre\" name=\"usuario-nombre\" required> <label for=\"usuario-nombre\">Email:</label> <input type=\"text\" id=\"usuario-email\" name=\"usuario-email\" required> <label for=\"usuario-nombre\">Contraseña:</label> <input type=\"text\" id=\"usuario-contrasena\" name=\"usuario-contrasena\" required></fieldset><button type=\"submit\">Crear usuario</button></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -376,7 +376,7 @@ func UsuarioIDBody(usuario db.Usuario) templ.Component {
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(usuario.IDUsuario)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/user.templ`, Line: 104, Col: 54}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/user.templ`, Line: 116, Col: 54}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
@@ -389,7 +389,7 @@ func UsuarioIDBody(usuario db.Usuario) templ.Component {
 		var templ_7745c5c3_Var21 string
 		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(usuario.NombreUsuario)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/user.templ`, Line: 105, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/user.templ`, Line: 117, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 		if templ_7745c5c3_Err != nil {
@@ -402,7 +402,7 @@ func UsuarioIDBody(usuario db.Usuario) templ.Component {
 		var templ_7745c5c3_Var22 string
 		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(usuario.Email)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/user.templ`, Line: 106, Col: 33}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/user.templ`, Line: 118, Col: 33}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 		if templ_7745c5c3_Err != nil {
@@ -415,7 +415,7 @@ func UsuarioIDBody(usuario db.Usuario) templ.Component {
 		var templ_7745c5c3_Var23 string
 		templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(usuario.Contrasena)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/user.templ`, Line: 107, Col: 44}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/user.templ`, Line: 119, Col: 44}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 		if templ_7745c5c3_Err != nil {

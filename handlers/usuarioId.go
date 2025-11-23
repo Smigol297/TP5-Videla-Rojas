@@ -26,7 +26,17 @@ func (h *UsuarioHandler) PutUsuarioByID(w http.ResponseWriter, r *http.Request, 
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/usuarios", http.StatusSeeOther)
+	//http.Redirect(w, r, "/usuarios", http.StatusSeeOther)
+	// Volvemos a pedir la lista completa a la BD
+	usuarios, err := h.queries.ListUsuarios(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// 3. Renderizamos el componente UserList completo
+	// Esto hará que Go ejecute el "if len(usuarios) == 0" y muestre el mensaje correcto
+	views.UserList(usuarios).Render(r.Context(), w)
 }
 
 func (h *UsuarioHandler) DeleteUsuarioByID(w http.ResponseWriter, r *http.Request, id int) {
