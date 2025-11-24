@@ -35,7 +35,6 @@ func (h *UsuarioHandler) PutUsuarioByID(w http.ResponseWriter, r *http.Request, 
 	}
 
 	// 3. Renderizamos el componente UserList completo
-	// Esto hará que Go ejecute el "if len(usuarios) == 0" y muestre el mensaje correcto
 	views.UserList(usuarios).Render(r.Context(), w)
 }
 

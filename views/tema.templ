@@ -66,6 +66,14 @@ templ TemaList(temas []db.Tema) {
     </div>
 }
 
+//esto lo hago para actualizar las tarjetas al borrar tema
+templ DeleteTemaOOB(temas []db.Tema, tarjetas []db.Tarjetum){
+    @TemaTable(temas)
+    <div id="lista-tarjetas" hx-swap-oob="true">
+        @TarjetaTable(tarjetas) // renderizo solo la tabla para no hacer una muneca rusa
+    </div>
+}
+
 // Formulario (sin cambios)
 templ temaForm(){
     <form 

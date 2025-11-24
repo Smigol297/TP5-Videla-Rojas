@@ -42,9 +42,12 @@ templ UserList(usuarios []db.Usuario){
 						<dialog id={"edit-" + strconv.Itoa(int(usuario.IDUsuario))}>
 							<article>
 								<header>Editar Usuario #{ usuario.IDUsuario }</header>
-								<!-- onsubmit cierra el dialog (y el formulario se envía normalmente) -->
-								<form method="post" action={"/usuarios/" + strconv.Itoa(int(usuario.IDUsuario))} onsubmit={ templ.JSFuncCall("closeDialog", "edit-"+strconv.Itoa(int(usuario.IDUsuario))) }>
-									<input type="hidden" name="_method" value="PUT">
+								<form
+                                    hx-put= {"/usuarios/" + strconv.Itoa(int(usuario.IDUsuario))}
+                                    hx-on:submit={ templ.JSFuncCall("closeDialog", "edit-"+strconv.Itoa(int(usuario.IDUsuario))) }
+                                    hx-target="#lista-usuarios"
+                                    hx-swap="outerHTML"    
+                                >
                                     <label>Nombre del Usuario</label>
                                         <input type="text" name="usuario-nombre" value={ usuario.NombreUsuario }>
                                     <label>Email del usuario</label>
@@ -59,7 +62,6 @@ templ UserList(usuarios []db.Usuario){
                     </td>
                     <td>
                         <button 
-                            class="secondary"
                             hx-delete={ "/usuarios/" + strconv.Itoa(int(usuario.IDUsuario)) }
                             hx-target="#lista-usuarios" 
                             hx-swap="outerHTML"
