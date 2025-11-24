@@ -26,7 +26,7 @@ func (h *UsuarioHandler) PutUsuarioByID(w http.ResponseWriter, r *http.Request, 
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//http.Redirect(w, r, "/usuarios", http.StatusSeeOther)
+
 	// Volvemos a pedir la lista completa a la BD
 	usuarios, err := h.queries.ListUsuarios(ctx)
 	if err != nil {
@@ -46,7 +46,6 @@ func (h *UsuarioHandler) DeleteUsuarioByID(w http.ResponseWriter, r *http.Reques
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//http.Redirect(w, r, "/usuarios", http.StatusSeeOther)
 	// Volvemos a pedir la lista completa a la BD
 	usuarios, err := h.queries.ListUsuarios(ctx)
 	if err != nil {

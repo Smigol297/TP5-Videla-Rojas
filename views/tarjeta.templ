@@ -39,8 +39,12 @@ templ TarjetaTable(tarjetas []db.Tarjetum) {
                         <dialog id={"edit-" + strconv.Itoa(int(tarjeta.IDTarjeta))}>
                             <article>
                                 <header>Editar Tarjeta #{ strconv.Itoa(int(tarjeta.IDTarjeta)) }</header>
-                                <form method="post" action={"/tarjetas/" + strconv.Itoa(int(tarjeta.IDTarjeta))} onsubmit={ templ.JSFuncCall("closeDialog", "edit-"+strconv.Itoa(int(tarjeta.IDTarjeta))) }>
-                                    <input type="hidden" name="_method" value="PUT">
+                                <form
+                                    hx-put= {"/tarjetas/" + strconv.Itoa(int(tarjeta.IDTarjeta))}
+                                    hx-on:submit={ templ.JSFuncCall("closeDialog", "edit-"+strconv.Itoa(int(tarjeta.IDTarjeta))) }
+                                    hx-target="#lista-tarjetas"
+                                    hx-swap="outerHTML"    
+                                >
                                     <label>Pregunta</label>
                                     <input type="text" name="pregunta" value={ tarjeta.Pregunta }>
                                     <label>Respuesta</label>
@@ -61,8 +65,7 @@ templ TarjetaTable(tarjetas []db.Tarjetum) {
                     </td>
 
                     <td>
-                        <button 
-                            class="secondary"
+                        <button
                             hx-delete={ "/tarjetas/" + strconv.Itoa(int(tarjeta.IDTarjeta)) }
                             hx-target="#lista-tarjetas" 
                             hx-swap="outerHTML"
@@ -158,6 +161,8 @@ templ TarjetaBody(tarjetas []db.Tarjetum) {
                 <header><h2>Lista de Tarjetas</h2></header>
                 @TarjetaList(tarjetas)
         </article>
+    </div>
+    <div class="grid"> 
         <article>
             <h2>Crear Tarjetas</h2>
             @tarjetaCreateForm()

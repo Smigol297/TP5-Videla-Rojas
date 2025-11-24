@@ -103,7 +103,6 @@ func (h *UsuarioHandler) CreateUsuario(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//http.Redirect(w, r, "/usuarios", http.StatusSeeOther)
 
 	// 2. En lugar de Redirect, consultamos la lista actualizada
 	usuarios, err := h.queries.ListUsuarios(ctx)

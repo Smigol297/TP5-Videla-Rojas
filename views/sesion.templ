@@ -16,9 +16,9 @@ templ SesionList(tarjetas []db.Tarjetum) {
                             <div class="pregunta">{ t.Pregunta }</div>
 
                             <div class="grid">
-                                <div class="opcion">A. { t.OpcionA }</div>
-                                <div class="opcion">B. { t.OpcionB }</div>
-                                <div class="opcion">C. { t.OpcionC }</div>
+                                <div class="opcion"> { t.OpcionA }</div>
+                                <div class="opcion"> { t.OpcionB }</div>
+                                <div class="opcion"> { t.OpcionC }</div>
                             </div>
 
                             <input type="hidden" name={ "pregunta" + strconv.Itoa(i+1) } value={ t.Pregunta }/>
@@ -35,7 +35,7 @@ templ SesionList(tarjetas []db.Tarjetum) {
                                     aria-describedby={ "help-text-" + strconv.Itoa(i+1) }
                                 />
                             </label>
-                            <small id={ "help-text-" + strconv.Itoa(i+1) }>Ingresa la letra de la respuesta correcta (A, B o C)</small>
+                            <small id={ "help-text-" + strconv.Itoa(i+1) }>Ingresa la respuesta correcta </small>
 
                             <div class="grid">
                                 <button

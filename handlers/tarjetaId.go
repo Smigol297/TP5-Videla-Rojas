@@ -51,7 +51,16 @@ func (h *TarjetaHandler) PutTarjetaByID(w http.ResponseWriter, r *http.Request, 
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/tarjetas", http.StatusSeeOther)
+
+	// 2. En lugar de Redirect, consultamos la lista actualizada
+	tarjetas, err := h.queries.ListTarjetas(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// 3. Renderizamos el componente UserList completo
+	// Esto hará que Go ejecute el "if len(usuarios) == 0" y muestre el mensaje correcto
+	views.TarjetaTable(tarjetas).Render(r.Context(), w)
 }
 func (h *TarjetaHandler) DeleteTarjetaByID(w http.ResponseWriter, r *http.Request, id int) {
 	ctx := context.Background()
@@ -60,7 +69,7 @@ func (h *TarjetaHandler) DeleteTarjetaByID(w http.ResponseWriter, r *http.Reques
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//http.Redirect(w, r, "/tarjetas", http.StatusSeeOther)
+
 	// Volvemos a pedir la lista completa a la BD
 	tarjetas, err := h.queries.ListTarjetas(ctx)
 	if err != nil {

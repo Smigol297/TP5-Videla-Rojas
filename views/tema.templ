@@ -18,8 +18,29 @@ templ TemaTable(temas []db.Tema) {
                     <td>{ strconv.Itoa(int(tema.IDTema)) }</td>
                     <td>{ tema.NombreTema }</td>
                     <td>
+						<a role="button" onclick={ templ.JSFuncCall("openDialog", "edit-"+strconv.Itoa(int(tema.IDTema))) }>
+							Modificar
+						</a>
+						<dialog id={"edit-" + strconv.Itoa(int(tema.IDTema))}>
+							<article>
+								<header>Editar Tema #{ tema.IDTema }</header>
+								<!-- onsubmit cierra el dialog (y el formulario se envía normalmente) -->
+								<form 
+                                hx-put={"/temas/" + strconv.Itoa(int(tema.IDTema))} 
+                                hx-on:submit={ templ.JSFuncCall("closeDialog", "edit-"+strconv.Itoa(int(tema.IDTema))) }
+                                hx-target="#lista-temas"
+                                hx-swap="outerHTML"
+                                >
+								<label>NombreTema</label>
+									<input type="text" name="tema-nombre" value={ tema.NombreTema }>
+                                    <button type="submit">Guardar</button>
+									<button type="button" onclick={ templ.JSFuncCall("closeDialog", "edit-"+strconv.Itoa(int(tema.IDTema))) }>Cancelar</button>
+								</form>
+							</article>
+						</dialog>
+					</td>
+                    <td>
                         <button 
-                            class="secondary"
                             hx-delete={ "/temas/" + strconv.Itoa(int(tema.IDTema)) }
                             hx-target="#lista-temas" 
                             hx-swap="outerHTML"

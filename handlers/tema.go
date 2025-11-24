@@ -58,15 +58,6 @@ func (h *TemaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		//DELETE/temas=1
 		case http.MethodDelete:
 			h.DeleteTemaByID(w, r, id)
-		case http.MethodPost:
-			switch r.FormValue("_method") {
-			case "PUT":
-				h.PutTemaByID(w, r, id)
-			case "DELETE":
-				h.DeleteTemaByID(w, r, id)
-			default:
-				http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
-			}
 		default:
 			http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
 		}
@@ -100,7 +91,6 @@ func (h *TemaHandler) CreateTema(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//http.Redirect(w, r, "/tarjetas", http.StatusSeeOther)
 
 	//Obtener la lista actualizada de temas
 	temas, err := h.queries.ListTemas(ctx)

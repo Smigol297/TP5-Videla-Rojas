@@ -13,16 +13,22 @@ sqlc:
 # Actualizar dependencias
 tidy: go.mod go.sum
 	@go mod tidy
+
+
 run: up tidy sqlc templ build
 	./$(BINARY) & echo $$! > server.pid
 	sleep 1
+
+
 stop:
 	@if [ -f server.pid ]; then \
 		kill $$(cat server.pid); \
 		rm -f server.pid; \
 	else \
-		 "No se encontró server.pid, utilizar lsof -i :8080 para buscar el proceso y luego kill 'PID' para matarlo"; \
+		 "No se encontró server.pid, utilizar lsof -i :8081 para buscar el proceso y luego kill 'PID' para matarlo"; \
 	fi
+
+	
 down:
 	@docker compose down
 	@rm -rf $(BINARY)

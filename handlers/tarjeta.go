@@ -75,15 +75,6 @@ func (h *TarjetaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		//DELETE/tarjetas=1
 		case http.MethodDelete:
 			h.DeleteTarjetaByID(w, r, id)
-		case http.MethodPost:
-			switch r.FormValue("_method") {
-			case "PUT":
-				h.PutTarjetaByID(w, r, id)
-			case "DELETE":
-				h.DeleteTarjetaByID(w, r, id)
-			default:
-				http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
-			}
 		default:
 			http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
 		}
@@ -128,7 +119,6 @@ func (h *TarjetaHandler) CreateTarjeta(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//http.Redirect(w, r, "/tarjetas", http.StatusSeeOther)
 	// 2. En lugar de Redirect, consultamos la lista actualizada
 	tarjetas, err := h.queries.ListTarjetas(ctx)
 	if err != nil {
