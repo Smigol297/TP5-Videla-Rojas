@@ -100,5 +100,15 @@ func (h *TemaHandler) CreateTema(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/tarjetas", http.StatusSeeOther)
+	//http.Redirect(w, r, "/tarjetas", http.StatusSeeOther)
+
+	//Obtener la lista actualizada de temas
+	temas, err := h.queries.ListTemas(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// 3. Renderizar SOLO la lista de temas
+	views.TemaList(temas).Render(r.Context(), w)
 }

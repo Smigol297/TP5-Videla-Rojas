@@ -6,146 +6,163 @@ import (
 
 var dialogHandle = templ.NewOnceHandle()
 
-templ TarjetaList(tarjetas []db.Tarjetum) {
-    
-    @dialogHandle.Once() {
-		<script>
-			function openDialog(id) {
-				const d = document.getElementById(id);
-				if (d && typeof d.showModal === "function") d.showModal();
-			}
-			function closeDialog(id) {
-				const d = document.getElementById(id);
-				if (d) d.close && d.close();
-			}
-		</script>
-	}
-    
-    <div class="overflow-auto">
-    <table>
+templ TarjetaTable(tarjetas []db.Tarjetum) {
+    <table id="lista-tarjetas">
         <thead>
             <tr>
-                <th>IDTarjeta</th>
+                <th>ID</th>
                 <th>Pregunta</th>
                 <th>Respuesta</th>
                 <th>OpcionA</th>
                 <th>OpcionB</th>
                 <th>OpcionC</th>
                 <th>IDTema</th>
-                <th></th>
-                <th></th>
+                <th>Modificar</th>
+                <th>Eliminar</th>
             </tr>
         </thead>
         <tbody>
             for _, tarjeta := range tarjetas {
                 <tr>
-                    <td>{ tarjeta.IDTarjeta }</td>
+                    <td>{ strconv.Itoa(int(tarjeta.IDTarjeta)) }</td>
                     <td>{ tarjeta.Pregunta }</td>
                     <td>{ tarjeta.Respuesta }</td>
                     <td>{ tarjeta.OpcionA }</td>
                     <td>{ tarjeta.OpcionB }</td>
                     <td>{ tarjeta.OpcionC }</td>
-                    <td>{ tarjeta.IDTema }</td>
+                    <td>{ strconv.Itoa(int(tarjeta.IDTema)) }</td>
                     
                     <td>
-						<a role="button" onclick={ templ.JSFuncCall("openDialog", "edit-"+strconv.Itoa(int(tarjeta.IDTarjeta))) }>
-							Modificar
-						</a>
-						<dialog id={"edit-" + strconv.Itoa(int(tarjeta.IDTarjeta))}>
-							<article>
-								<header>Editar Tarjeta #{ tarjeta.IDTarjeta }</header>
-								<!-- onsubmit cierra el dialog (y el formulario se envía normalmente) -->
-								<form method="post" action={"/tarjetas/" + strconv.Itoa(int(tarjeta.IDTarjeta))} onsubmit={ templ.JSFuncCall("closeDialog", "edit-"+strconv.Itoa(int(tarjeta.IDTarjeta))) }>
-									<input type="hidden" name="_method" value="PUT">
-								<label>Pregunta</label>
-									<input type="text" name="pregunta" value={ tarjeta.Pregunta }>
-									<label>Respuesta</label>
-									<input type="text" name="respuesta" value={ tarjeta.Respuesta }>
-									<label>OpcionA</label>
-									<input type="text" name="opcion-a" value={ tarjeta.OpcionA }>
+                        <a role="button" onclick={ templ.JSFuncCall("openDialog", "edit-"+strconv.Itoa(int(tarjeta.IDTarjeta))) }>
+                            Modificar
+                        </a>
+                        <dialog id={"edit-" + strconv.Itoa(int(tarjeta.IDTarjeta))}>
+                            <article>
+                                <header>Editar Tarjeta #{ strconv.Itoa(int(tarjeta.IDTarjeta)) }</header>
+                                <form method="post" action={"/tarjetas/" + strconv.Itoa(int(tarjeta.IDTarjeta))} onsubmit={ templ.JSFuncCall("closeDialog", "edit-"+strconv.Itoa(int(tarjeta.IDTarjeta))) }>
+                                    <input type="hidden" name="_method" value="PUT">
+                                    <label>Pregunta</label>
+                                    <input type="text" name="pregunta" value={ tarjeta.Pregunta }>
+                                    <label>Respuesta</label>
+                                    <input type="text" name="respuesta" value={ tarjeta.Respuesta }>
+                                    <label>OpcionA</label>
+                                    <input type="text" name="opcion-a" value={ tarjeta.OpcionA }>
                                     <label>OpcionB</label>
-									<input type="text" name="opcion-b" value={ tarjeta.OpcionB }>
+                                    <input type="text" name="opcion-b" value={ tarjeta.OpcionB }>
                                     <label>OpcionC</label>
-									<input type="text" name="opcion-c" value={ tarjeta.OpcionC }>
+                                    <input type="text" name="opcion-c" value={ tarjeta.OpcionC }>
                                     <label>IDTema</label>
-									<input type="text" name="id-tema" value={ tarjeta.IDTema }>
+                                    <input type="text" name="id-tema" value={ strconv.Itoa(int(tarjeta.IDTema)) }>
                                     <button type="submit">Guardar</button>
-									<button type="button" onclick={ templ.JSFuncCall("closeDialog", "edit-"+strconv.Itoa(int(tarjeta.IDTarjeta))) }>Cancelar</button>
-								</form>
-							</article>
-						</dialog>
-					</td>
+                                    <button type="button" onclick={ templ.JSFuncCall("closeDialog", "edit-"+strconv.Itoa(int(tarjeta.IDTarjeta))) }>Cancelar</button>
+                                </form>
+                            </article>
+                        </dialog>
+                    </td>
 
                     <td>
-                        <form action={"/tarjetas/" + strconv.Itoa(int(tarjeta.IDTarjeta))} method="post">
-                        <input type="hidden" name="_method" value="DELETE" />
-                        <button role="button">Eliminar</button>
-                        </form>
+                        <button 
+                            class="secondary"
+                            hx-delete={ "/tarjetas/" + strconv.Itoa(int(tarjeta.IDTarjeta)) }
+                            hx-target="#lista-tarjetas" 
+                            hx-swap="outerHTML"
+                            hx-confirm="¿Estás seguro de que deseas eliminar esta tarjeta?"
+                        >
+                            Eliminar
+                        </button>
                     </td>
                 </tr>
             }
             if len(tarjetas) == 0 {
                 <tr>
-                    <td colspan="2">No hay tarjetas disponibles.</td>
+                    <td colspan="9" style="text-align: center;">No hay tarjetas disponibles.</td>
                 </tr>
             }
         </tbody>
     </table>
+}
+
+//Separo TarjetaTable de TarjetaList por tema de renderizado (duplicacion)
+templ TarjetaList(tarjetas []db.Tarjetum) {
+    @dialogHandle.Once() {
+        <script>
+            function openDialog(id) {
+                const d = document.getElementById(id);
+                if (d && typeof d.showModal === "function") d.showModal();
+            }
+            function closeDialog(id) {
+                const d = document.getElementById(id);
+                if (d) d.close && d.close();
+            }
+        </script>
+    }
+    
+    <div class="overflow-auto">
+        @TarjetaTable(tarjetas)
     </div>
 }
 
 templ tarjetaCreateForm(){
-    <form id="tarjeta-form" class="entity-form" method="post" action="/tarjetas">
-    <fieldset>
-        <legend>Información principal</legend>
-        <div>
-            <label for="tarjeta-pregunta">Pregunta:</label>
-            <input type="text" id="tarjeta-pregunta" name="pregunta" required>
-        </div>
-        <div>
-            <label for="tarjeta-respuesta">Respuesta (Correcta):</label>
-            <input type="text" id="tarjeta-respuesta" name="respuesta" required>
-        </div>
-    </fieldset>
+    <form
+        id="tarjeta-form" 
+        class="entity-form" 
+        hx-post="/tarjetas" 
+        hx-target="#lista-tarjetas" 
+        hx-swap="outerHTML"
+        hx-on::after-request="this.reset()"
+    >
+        <fieldset>
+            <legend>Información principal</legend>
+            <div>
+                <label for="tarjeta-pregunta">Pregunta:</label>
+                <input type="text" id="tarjeta-pregunta" name="pregunta" required>
+            </div>
+            <div>
+                <label for="tarjeta-respuesta">Respuesta (Correcta):</label>
+                <input type="text" id="tarjeta-respuesta" name="respuesta" required>
+            </div>
+        </fieldset>
 
-    <fieldset>
-        <legend>Opciones</legend>
-        <div>
-            <label for="tarjeta-opcion-a">Opción A:</label>
-            <input type="text" id="tarjeta-opcion-a" name="opcion-a" required>
-        </div>
-        <div>
-            <label for="tarjeta-opcion-b">Opción B:</label>
-            <input type="text" id="tarjeta-opcion-b" name="opcion-b" required>
-        </div>
-        <div>
-            <label for="tarjeta-opcion-c">Opción C:</label>
-            <input type="text" id="tarjeta-opcion-c" name="opcion-c" required>
-        </div>
-    </fieldset>
+        <fieldset>
+            <legend>Opciones</legend>
+            <div>
+                <label for="tarjeta-opcion-a">Opción A:</label>
+                <input type="text" id="tarjeta-opcion-a" name="opcion-a" required>
+            </div>
+            <div>
+                <label for="tarjeta-opcion-b">Opción B:</label>
+                <input type="text" id="tarjeta-opcion-b" name="opcion-b" required>
+            </div>
+            <div>
+                <label for="tarjeta-opcion-c">Opción C:</label>
+                <input type="text" id="tarjeta-opcion-c" name="opcion-c" required>
+            </div>
+        </fieldset>
 
-    <fieldset>
-        <legend>Relación con tema</legend>
-        <div>
-            <label for="tarjeta-id-tema">ID del Tema:</label>
-            <input type="number" id="tarjeta-id-tema" name="id-tema" placeholder="Ingrese un ID" min="1" required>
-        </div>
-    </fieldset>
+        <fieldset>
+            <legend>Relación con tema</legend>
+            <div>
+                <label for="tarjeta-id-tema">ID del Tema:</label>
+                <input type="number" id="tarjeta-id-tema" name="id-tema" placeholder="Ingrese un ID" min="1" required>
+            </div>
+        </fieldset>
 
-    <button type="submit">Guardar Tarjeta</button>
+        <button type="submit">Guardar Tarjeta</button>
     </form>
 
 }
 
 templ TarjetaBody(tarjetas []db.Tarjetum) {
-    <article>
-            <header><h2>Lista de Tarjetas</h2></header>
-            @TarjetaList(tarjetas)
-    </article>
-    <article>
-        <h2>Crear Tarjetas</h2>
-        @tarjetaCreateForm()
-    </article>
+    <div class="grid"> 
+        <article>
+                <header><h2>Lista de Tarjetas</h2></header>
+                @TarjetaList(tarjetas)
+        </article>
+        <article>
+            <h2>Crear Tarjetas</h2>
+            @tarjetaCreateForm()
+        </article>
+    </div>
 }
 
 templ TarjetaIDBody(tarjeta db.Tarjetum){

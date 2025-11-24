@@ -128,7 +128,16 @@ func (h *TarjetaHandler) CreateTarjeta(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/tarjetas", http.StatusSeeOther)
+	//http.Redirect(w, r, "/tarjetas", http.StatusSeeOther)
+	// 2. En lugar de Redirect, consultamos la lista actualizada
+	tarjetas, err := h.queries.ListTarjetas(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	//  Renderizamos SOLO el componente de la lista (UserList)
+	// HTMX tomará este HTML y reemplazará la tabla vieja en el navegador.
+	views.TarjetaTable(tarjetas).Render(r.Context(), w)
 }
 
 func (h *TarjetaHandler) GetTarjetasByTema(title string, tema int, w http.ResponseWriter, r *http.Request) {

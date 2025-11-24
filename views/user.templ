@@ -101,13 +101,16 @@ templ userForm(){
 }
 
 templ UserBody(usuarios []db.Usuario) {
-    <article>
-            <h1>Lista de Usuarios</h1>
+    <div class="grid">  <article>
+            <header>
+                <h1>Lista de Usuarios</h1>
+            </header>
             @UserList(usuarios)
-    </article>
-    <article>
+        </article>
+        <article>
             @userForm()
-    </article>
+        </article>
+    </div>
 }
 
 templ UsuarioIDBody(usuario db.Usuario){

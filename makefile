@@ -28,6 +28,7 @@ down:
 	@rm -rf $(BINARY)
 
 reboot: stop run
+		
 
 templ:
 	find . -name '*_templ.go' -delete

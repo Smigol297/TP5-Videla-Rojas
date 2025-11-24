@@ -3,65 +3,61 @@ import (
     "tp5/db"
     "strconv"
 )
-templ TemaList(temas []db.Tema) {
-    
-    <div class="overflow-auto">
-    <table>
+templ TemaTable(temas []db.Tema) {
+    <table id="lista-temas">
         <thead>
             <tr>
                 <th>IDTema</th>
                 <th>Nombre del tema</th>
-                <th></th>
-                <th></th>
+                <th>Acción</th>
             </tr>
         </thead>
         <tbody>
             for _, tema := range temas {
                 <tr>
-                    <td>{ tema.IDTema }</td>
+                    <td>{ strconv.Itoa(int(tema.IDTema)) }</td>
                     <td>{ tema.NombreTema }</td>
                     <td>
-						<a role="button" onclick={ templ.JSFuncCall("openDialog", "edit-"+strconv.Itoa(int(tema.IDTema))) }>
-							Modificar
-						</a>
-						<dialog id={"edit-" + strconv.Itoa(int(tema.IDTema))}>
-							<article>
-								<header>Editar Tema #{ tema.IDTema }</header>
-								<!-- onsubmit cierra el dialog (y el formulario se envía normalmente) -->
-								<form method="post" action={"/temas/" + strconv.Itoa(int(tema.IDTema))} onsubmit={ templ.JSFuncCall("closeDialog", "edit-"+strconv.Itoa(int(tema.IDTema))) }>
-									<input type="hidden" name="_method" value="PUT">
-								<label>NombreTema</label>
-									<input type="text" name="tema-nombre" value={ tema.NombreTema }>
-                                    <button type="submit">Guardar</button>
-									<button type="button" onclick={ templ.JSFuncCall("closeDialog", "edit-"+strconv.Itoa(int(tema.IDTema))) }>Cancelar</button>
-								</form>
-							</article>
-						</dialog>
-					</td>
-
-                    <td>
-                        <form action={"/temas/" + strconv.Itoa(int(tema.IDTema))} method="post">
-                        <input type="hidden" name="_method" value="DELETE" />
-                        <button role="button">Eliminar</button>
-                        </form>
+                        <button 
+                            class="secondary"
+                            hx-delete={ "/temas/" + strconv.Itoa(int(tema.IDTema)) }
+                            hx-target="#lista-temas" 
+                            hx-swap="outerHTML"
+                            hx-confirm="¿Estás seguro?"
+                        >
+                            Eliminar
+                        </button>
                     </td>
                 </tr>
             }
             if len(temas) == 0 {
                 <tr>
-                    <td colspan="2">No hay temas agregados.</td>
+                    <td colspan="3" style="text-align: center;">No hay temas agregados.</td>
                 </tr>
             }
         </tbody>
     </table>
+}
+
+templ TemaList(temas []db.Tema) {
+    <div class="overflow-auto">
+        @TemaTable(temas)
     </div>
 }
 
+// Formulario (sin cambios)
 templ temaForm(){
-    <form id="tema-form" class="entity-form" method="post" action="/temas">
+    <form 
+        id="tema-form" 
+        class="entity-form" 
+        hx-post="/temas" 
+        hx-target="#lista-temas" 
+        hx-swap="outerHTML"
+        hx-on::after-request="this.reset()"
+    >
         <fieldset>
             <label for="tema-nombre">Nombre del Tema:</label>
-                <input type="text" id="tema-nombre" name="tema-nombre" required>
+            <input type="text" id="tema-nombre" name="tema-nombre" required>
         </fieldset>
         <button type="submit">Guardar Tema</button>
     </form>
