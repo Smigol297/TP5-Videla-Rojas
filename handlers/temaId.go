@@ -70,6 +70,6 @@ func (h *TemaHandler) DeleteTemaByID(w http.ResponseWriter, r *http.Request, id 
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// 3. Renderizar SOLO la lista actualizada
+	//Renderizar SOLO la lista actualizada
 	views.DeleteTemaOOB(temas, tarjetas).Render(r.Context(), w)
 }
