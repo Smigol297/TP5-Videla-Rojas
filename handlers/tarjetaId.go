@@ -52,14 +52,13 @@ func (h *TarjetaHandler) PutTarjetaByID(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	// 2. En lugar de Redirect, consultamos la lista actualizada
+	// En lugar de Redirect, consultamos la lista actualizada
 	tarjetas, err := h.queries.ListTarjetas(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// 3. Renderizamos el componente UserList completo
-	// Esto hará que Go ejecute el "if len(usuarios) == 0" y muestre el mensaje correcto
+	// Renderizamos el componente UserList completo
 	views.TarjetaTable(tarjetas).Render(r.Context(), w)
 }
 func (h *TarjetaHandler) DeleteTarjetaByID(w http.ResponseWriter, r *http.Request, id int) {
@@ -77,7 +76,6 @@ func (h *TarjetaHandler) DeleteTarjetaByID(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// 3. Renderizamos el componente UserList completo
-	// Esto hará que Go ejecute el "if len(usuarios) == 0" y muestre el mensaje correcto
+	// Renderizamos el componente UserList completo
 	views.TarjetaTable(tarjetas).Render(r.Context(), w)
 }

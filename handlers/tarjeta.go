@@ -119,7 +119,7 @@ func (h *TarjetaHandler) CreateTarjeta(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// 2. En lugar de Redirect, consultamos la lista actualizada
+	// En lugar de Redirect, consultamos la lista actualizada
 	tarjetas, err := h.queries.ListTarjetas(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -137,7 +137,7 @@ func (h *TarjetaHandler) GetTarjetasByTema(title string, tema int, w http.Respon
 			http.StatusInternalServerError)
 		return
 	}
-	//	views.IndexPage(title, tarjetas, nil).Render(r.Context(), w)
+	//views.IndexPage(title, tarjetas, nil).Render(r.Context(), w)
 	views.SesionPage(tarjetas).Render(r.Context(), w)
 }
 

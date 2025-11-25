@@ -99,6 +99,6 @@ func (h *TemaHandler) CreateTema(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 3. Renderizar SOLO la lista de temas
+	// Renderizar SOLO la lista de temas
 	views.TemaList(temas).Render(r.Context(), w)
 }
