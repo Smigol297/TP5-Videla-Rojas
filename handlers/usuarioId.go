@@ -46,14 +46,14 @@ func (h *UsuarioHandler) DeleteUsuarioByID(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	// Volvemos a pedir la lista completa a la BD
-	/*usuarios, err := h.queries.ListUsuarios(ctx)
+	usuarios, err := h.queries.ListUsuarios(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	// Renderizamos el componente UserList completo
-	views.UserList(usuarios).Render(r.Context(), w)*/
+	views.UserList(usuarios).Render(r.Context(), w)
 
 	w.WriteHeader(http.StatusOK)
 }
