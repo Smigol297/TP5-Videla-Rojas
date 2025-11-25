@@ -8,10 +8,10 @@
 
 ## 🚀 Instalación y ejecución del proyecto
 
-1. Clonar el proyecto
+1. Clonar la rama `tp6`
 
 ```bash
-git clone https://github.com/Smigol297/TP5-Videla-Rojas
+git clone --branch tp6 --single-branch https://github.com/Smigol297/TP5-Videla-Rojas
 cd TP5-Videla-Rojas
 ```
 
