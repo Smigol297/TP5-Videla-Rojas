@@ -9,7 +9,8 @@ up:
 	sleep 1
 # Generar código con sqlc
 sqlc:
-	sqlc generate -f sqlc.yaml
+	go run github.com/sqlc-dev/sqlc/cmd/sqlc@latest generate
+	
 # Actualizar dependencias
 tidy: go.mod go.sum
 	@go mod tidy
